@@ -1,6 +1,5 @@
 package com.example.notesbackend.security.config;
 
-import com.example.notesbackend.account.model.Role;
 import com.example.notesbackend.account.service.AccountService;
 import com.example.notesbackend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
