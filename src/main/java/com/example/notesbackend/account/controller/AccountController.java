@@ -1,6 +1,5 @@
 package com.example.notesbackend.account.controller;
 
-//import com.example.notesbackend.account.model.Account;
 import com.example.notesbackend.account.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,6 @@
 package com.example.notesbackend.security.config;
 
+import com.example.notesbackend.account.model.Role;
 import com.example.notesbackend.account.service.AccountService;
 import com.example.notesbackend.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/auth/**").permitAll();
+                    request.requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name());
                     request.anyRequest().authenticated();
                 })
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
