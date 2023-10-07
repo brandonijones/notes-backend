@@ -19,7 +19,7 @@ public class AccountController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> hello() {
-        return new ResponseEntity<>("hello world!", HttpStatus.OK);
+        return new ResponseEntity<>("Hello User!", HttpStatus.OK);
     }
 
 }

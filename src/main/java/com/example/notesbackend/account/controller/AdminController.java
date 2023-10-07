@@ -14,6 +14,6 @@ public class AdminController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> hello() {
-        return new ResponseEntity<>("hello world!", HttpStatus.OK);
+        return new ResponseEntity<>("Hello Admin!", HttpStatus.OK);
     }
 }

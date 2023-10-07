@@ -1,13 +1,17 @@
 package com.example.notesbackend.account.service.impl;
 
 import com.example.notesbackend.account.model.Account;
+import com.example.notesbackend.account.model.Token;
+import com.example.notesbackend.account.repository.TokenRepository;
 import com.example.notesbackend.account.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,19 +19,23 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
  * Implementation of the JWT Service.
  */
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
 
     private static final int TWENTY_FOUR_HOURS = 1000 * 60 * 24;
 
     @Value("${app.jwt-secret}")
     private String SECRET_KEY;
+
+    private final TokenRepository tokenRepository;
 
     @Override
     public String extractUsername(String token) {
@@ -54,7 +62,10 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isTokenValid(String token, Account account) {
         final String username = extractUsername(token);
-        return username.equals(account.getUsername()) && !isTokenExpired(token);
+        Optional<Token> tokenObject = tokenRepository.findByToken(token);
+        return tokenObject.isPresent()
+                && username.equals(account.getUsername())
+                && !isTokenExpiredOrRevoked(tokenObject.get(), token);
     }
 
     /**
@@ -67,6 +78,19 @@ public class JwtServiceImpl implements JwtService {
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+    }
+
+    private boolean isTokenExpiredOrRevoked(Token tokenObject, String token) {
+        if (isTokenExpired(token) || tokenObject.isRevoked()) {
+            tokenObject.setExpired(true);
+            tokenObject.setRevoked(true);
+            tokenRepository.save(tokenObject);
+            log.debug("JWT is expired or revoked");
+            return true;
+        }
+
+        log.debug("JWT is not expired or revoked");
+        return false;
     }
 
     /**

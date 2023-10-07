@@ -25,9 +25,9 @@ import java.util.List;
 public class Account implements UserDetails {
 
     @Id
-    @Column(name = "account_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long accountId;
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
     @Column(name = "username", unique = true, nullable = false, length = 30)
     private String username;
@@ -48,6 +48,9 @@ public class Account implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy = "account")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

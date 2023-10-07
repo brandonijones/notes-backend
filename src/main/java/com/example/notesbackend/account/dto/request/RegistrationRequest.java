@@ -1,6 +1,7 @@
 package com.example.notesbackend.account.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
  * TODO add description here.
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistrationRequest {
